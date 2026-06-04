@@ -1,0 +1,71 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "gui-label-tool"
+version = "0.1.0"
+description = "Record and annotate GUI interaction trajectories on a virtual desktop (QEMU/Docker)."
+readme = "README.md"
+requires-python = ">=3.12"
+license = { text = "MIT" }
+authors = [
+    { name = "xiaoyixiong", email = "ethan_yx@hotmail.com" }
+]
+keywords = ["gui", "annotation", "labeling", "qemu", "desktop", "trajectory"]
+classifiers = [
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.12",
+    "Operating System :: POSIX :: Linux",
+]
+# Runtime dependencies (declared from the actual imports in the code).
+dependencies = [
+    "fastapi",   # web framework for the services
+    "uvicorn",   # ASGI server
+    "requests",  # inter-service HTTP calls
+    "pydantic",  # Event / config models
+    "pyyaml",    # config loading
+    "pillow",    # annotation image drawing
+    "numpy",     # in-guest screenshot service (vm_service/recorder.py)
+    "gradio",    # frontend UI (gui_label_tool/frontend/app.py)
+]
+
+[dependency-groups]
+# Dev tooling: format + lint. Installed by `uv sync` (use `--no-dev` to skip).
+dev = ["ruff", "black"]
+
+[project.urls]
+# Homepage = "https://github.com/<owner>/gui-label-tool"  # set once published
+Changelog = "CHANGELOG.md"
+
+[tool.uv]
+# Always use a uv-managed interpreter; never fall back to a system Python.
+python-preference = "only-managed"
+
+[tool.hatch.build]
+packages = ["gui_label_tool"]
+
+[tool.hatch.build.targets.wheel]
+packages = ["gui_label_tool"]
+output-dir = "output/dist"
+
+[tool.hatch.build.targets.sdist]
+output-dir = "output/dist"
+
+# ---- Formatting & lint ----
+
+[tool.black]
+line-length = 88
+target-version = ["py312"]
+extend-exclude = "legacy|output"
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+extend-exclude = ["legacy", "output"]
+
+[tool.ruff.lint]
+# Pyflakes (F) + key pycodestyle (E) + import sorting (I).
+select = ["E4", "E7", "E9", "F", "I"]

@@ -1,0 +1,46 @@
+runtime:
+  # ubuntu or windows
+  target_os: "ubuntu"
+
+# Port each pipeline service listens on (all on localhost).
+# Keys match the service packages: gui_label_tool.<key>.
+ports:
+  qemu_log: 8011    # qemu_log service
+  annotation: 8012  # annotation service
+  vm: 8013          # virtual-machine manager service
+  frontend: 8810    # frontend UI (Gradio)
+
+# vm stage: the QEMU virtual machine being labeled.
+vm:
+  image: "happysixd/osworld-docker"
+  container_name: "osworld_container"
+
+  log_base_dir: "data/qemu_logs"
+  disk_image: "imgs/Ubuntu.annotation.qcow2"
+  shared_path: "vm_service"     # host dir mounted into the guest (holds recorder.py)
+  vnc_host: "127.0.0.1"         # host reachable by the browser for the VNC view
+  uefi_rom: ""                  # not needed for ubuntu; leave empty
+  # Ports exposed by the QEMU container itself.
+  ports:
+    vnc: 8007
+    api: 5000
+    server: 8000
+    screenshot: 5001
+  resources:
+    disk_size: "64G"
+    ram_size: "8G"
+    cpu_cores: "8"
+
+# qemu_log stage: event merge / debounce.
+qemu_log:
+  text_debounce: 2.0
+  scroll_debounce: 0.3
+  key_debounce: 2.0
+  double_click_threshold: 0.3
+  double_click_distance_ratio: 0.004  # fraction of the axis (~0.4%)
+
+# annotation stage: where annotations are stored and screenshot timing.
+annotation:
+  storage_dir: "./data/annotations"
+  pre_screenshot_interval: 0.1
+  screenshot_retention: 10.0
