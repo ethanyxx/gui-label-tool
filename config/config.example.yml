@@ -8,7 +8,7 @@ ports:
   qemu_log: 8011    # qemu_log service
   annotation: 8012  # annotation service
   vm: 8013          # virtual-machine manager service
-  frontend: 8810    # frontend UI (Gradio)
+  frontend: 8810    # frontend web console
 
 # vm stage: the QEMU virtual machine being labeled.
 vm:

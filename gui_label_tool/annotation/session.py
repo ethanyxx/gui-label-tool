@@ -295,6 +295,11 @@ class AnnotationSession:
 
     def _clear_state(self) -> None:
         with self.lock:
+            # Always drop the active flag: ``finalize`` may be called without a
+            # prior ``freeze``, in which case ``_stop_capture`` never ran and
+            # ``is_active`` would otherwise stay True forever, blocking any new
+            # session until the service is restarted.
+            self.is_active = False
             self.current_annotation_id = None
             self.current_annotation_name = None
             self.current_annotator_id = None

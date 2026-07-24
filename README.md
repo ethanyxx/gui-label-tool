@@ -14,7 +14,7 @@ The backend is a four-stage pipeline plus a frontend, each a small package under
 vm        → boots/stops the QEMU virtual machine (Docker container) being labeled
 qemu_log  → tails QEMU's input-event trace and merges it into semantic actions
 annotation→ pairs each action with a pre-action screenshot and stores it
-frontend  → Gradio control console: drive a session, then review/prune/export
+frontend  → web console (FastAPI + React): drive a session, then review/prune/export
 ```
 
 Inside the VM, `vm_service/recorder.py` serves screenshots over HTTP (it
@@ -24,9 +24,9 @@ is mounted into the guest via the shared folder). The `Event` model in
 
 ## Architecture
 
-Four FastAPI/Gradio services run on the host (ports from `config.yml`). The
-frontend orchestrates a session; events and screenshots flow one way into the
-annotation store.
+Four FastAPI services run on the host (ports from `config.yml`). The frontend
+serves the React UI and orchestrates a session; events and screenshots flow one
+way into the annotation store.
 
 ```
                                  Browser
@@ -34,7 +34,7 @@ annotation store.
                   │ HTTP control                          │ noVNC (VNC view)
                   ▼                                       │
         ┌──────────────────────┐                          │
-        │  frontend  (Gradio)   │  :8810                   │
+        │ frontend (React SPA)  │  :8810                   │
         │  drive · poll · review│                          │
         └───┬────────┬───────┬──┘                          │
    start/   │        │       │  poll /events,              │
@@ -71,6 +71,14 @@ Flow during a recording session:
    pairs it with the action, and persists the trajectory to `data/annotations/`.
 5. **frontend** polls `/annotation/events` to render the live trajectory, where
    the operator can exclude events and then finalize (which stops the container).
+
+## Privacy note
+
+This tool is, by design, an input recorder: every mouse action and **every
+keystroke** typed into the VM (including any password entered there) is stored
+in plain text in the produced trajectories, together with screenshots of the
+desktop. Only record inside disposable VM images, never enter real credentials
+during a session, and review a trajectory before sharing it.
 
 ## Requirements
 
@@ -129,6 +137,7 @@ uv run python -m gui_label_tool.frontend.app
 
 ```
 gui_label_tool/   backend packages (vm, qemu_log, annotation, frontend) + config.py
+web/              React frontend sources (built into gui_label_tool/frontend/static/)
 vm_service/       code mounted into the VM and run inside it (screenshot server)
 config/           YAML config files
 imgs/             input disk images
@@ -141,6 +150,19 @@ scripts/          manage_services.sh
 
 ```bash
 uv run ruff check gui_label_tool
+```
+
+### Web frontend
+
+The frontend service serves the prebuilt React app from
+`gui_label_tool/frontend/static/` (committed, so Python-only users don't need
+node). To work on the UI:
+
+```bash
+cd web
+npm install
+npm run dev     # dev server with hot reload, proxies /api to :8810
+npm run build   # rebuild gui_label_tool/frontend/static/
 ```
 
 ## License

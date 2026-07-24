@@ -29,7 +29,6 @@ dependencies = [
     "pyyaml",    # config loading
     "pillow",    # annotation image drawing
     "numpy",     # in-guest screenshot service (vm_service/recorder.py)
-    "gradio",    # frontend UI (gui_label_tool/frontend/app.py)
 ]
 
 [dependency-groups]

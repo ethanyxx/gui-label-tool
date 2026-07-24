@@ -53,4 +53,11 @@ coverage.xml
 /run/
 imgs/*
 !imgs/.gitkeep
+# Local configs are machine-specific; only the example is published.
 config/*
+!config/config.example.yml
+
+# Web frontend (React/Vite). Built assets are committed under
+# gui_label_tool/frontend/static/ so Python-only users don't need node.
+web/node_modules/
+
