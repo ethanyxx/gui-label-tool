@@ -5,6 +5,12 @@ Starts/stops the Docker container that runs the QEMU VM being labeled. Pure
 container logic (no HTTP); the FastAPI wiring lives in
 :mod:`~gui_label_tool.vm.service`.
 
+The container environment builds on the OSWorld project's Docker image
+(``happysixd/osworld-docker``, https://github.com/xlang-ai/OSWorld,
+Apache-2.0) and follows its conventions (DISK_SIZE/RAM_SIZE/CPU_CORES env
+vars, KVM passthrough, port layout); this tool extends it with QEMU
+input-event tracing for action capture.
+
 The target OS is selected via ``config.yml``::
 
     runtime:

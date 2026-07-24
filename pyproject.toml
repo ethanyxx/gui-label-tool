@@ -36,7 +36,7 @@ dependencies = [
 dev = ["ruff", "black"]
 
 [project.urls]
-# Homepage = "https://github.com/<owner>/gui-label-tool"  # set once published
+Homepage = "https://github.com/ethanyxx/gui-label-tool"
 Changelog = "CHANGELOG.md"
 
 [tool.uv]

@@ -165,6 +165,27 @@ npm run dev     # dev server with hot reload, proxies /api to :8810
 npm run build   # rebuild gui_label_tool/frontend/static/
 ```
 
+## Acknowledgements
+
+The VM containerization is built on top of [OSWorld](https://github.com/xlang-ai/OSWorld)'s
+Docker environment: the guest runs inside the `happysixd/osworld-docker` image published
+by the OSWorld project (Apache-2.0), and this tool follows its container conventions
+(resource env vars, KVM passthrough, port layout). On top of that base, this project adds
+action capture: QEMU input-event tracing plus the in-guest recorder used to pair every
+action with a pre-action screenshot.
+
+If you use this tool in academic work, please also consider citing OSWorld:
+
+```bibtex
+@inproceedings{xie2024osworld,
+  title     = {OSWorld: Benchmarking Multimodal Agents for Open-Ended Tasks in Real Computer Environments},
+  author    = {Tianbao Xie and Danyang Zhang and Jixuan Chen and Xiaochuan Li and Siheng Zhao and Ruisheng Cao and Toh Jing Hua and Zhoujun Cheng and Dongchan Shin and Fangyu Lei and Yitao Liu and Yiheng Xu and Shuyan Zhou and Silvio Savarese and Caiming Xiong and Victor Zhong and Tao Yu},
+  booktitle = {The Thirty-eighth Annual Conference on Neural Information Processing Systems (NeurIPS)},
+  year      = {2024},
+  url       = {https://arxiv.org/abs/2404.07972}
+}
+```
+
 ## License
 
 MIT. See [CHANGELOG.md](CHANGELOG.md) for version history.
